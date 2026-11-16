@@ -1,0 +1,21 @@
+[workspace]
+
+[package]
+name = "circle"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Ootle Circle: a rotating savings circle (ROSCA) on Tari Ootle. Members contribute a fixed amount every round; each round one member, in rotation, takes the pot."
+
+[dependencies]
+tari_template_lib = "0.35"
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

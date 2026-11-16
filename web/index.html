@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ootle Circle — Rotating savings circles on Tari</title>
+<meta name="description" content="Ootle Circle is a rotating savings circle (ROSCA) on Tari Ootle. Members contribute a fixed amount of TARI every round; each round one member, in rotation, takes the whole pot. Testnet demo.">
+<meta property="og:title" content="Ootle Circle — Rotating savings circles on Tari">
+<meta property="og:description" content="Save together. Take turns. A ROSCA on Tari Ootle: fixed contributions, one payout per round, everyone whole at the end.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28"><circle cx="16" cy="6" r="3.2" fill="#0f766e"/><circle cx="25" cy="13" r="3.2" fill="#0f766e" opacity=".75"/><circle cx="21" cy="24" r="3.2" fill="#0f766e" opacity=".55"/><circle cx="11" cy="24" r="3.2" fill="#0f766e" opacity=".4"/><circle cx="7" cy="13" r="3.2" fill="#0f766e" opacity=".85"/><path d="M16 9.5 22 12.5M25 16.2 22.5 21M18 25.5 14 25.5M9.5 21 8.5 16.2M10 12.5 13.5 9" stroke="#0f766e" stroke-width="1.4" fill="none"/></svg>
+      </span>
+      <span class="brand-name">Ootle Circle</span>
+    </a>
+    <nav class="site-nav">
+      <a href="#how">How it works</a>
+      <a href="#demo">Try it</a>
+      <a href="#contract">Contract</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <span class="pill pill-testnet">Testnet demo</span>
+  </div>
+</header>
+
+<main id="top">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">A rotating savings circle on Tari Ootle</p>
+        <h1>Save together.<br>Take turns.</h1>
+        <p class="lede">Five friends, 50 TARI each, every round. Each round one member takes the whole pot, in rotation. When everyone has taken the pot once, the circle closes and everyone is whole.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#demo">Try the demo circle</a>
+          <a class="btn btn-ghost" href="#contract">Read the contract</a>
+        </div>
+        <ul class="hero-badges">
+          <li><span class="dot"></span>Unaudited — testnet demo</li>
+          <li><span class="dot"></span>MIT licensed</li>
+          <li><span class="dot"></span>Built by x3npai</li>
+        </ul>
+      </div>
+      <div class="hero-card" aria-label="Example circle">
+        <div class="hero-card-head">
+          <div>
+            <p class="card-label">Example circle</p>
+            <p class="card-title">Shillong Friends Circle</p>
+          </div>
+          <span class="status status-active">Active · Round 2 of 5</span>
+        </div>
+        <dl class="hero-stats">
+          <div><dt>Contribution</dt><dd>50 TARI</dd></div>
+          <div><dt>Pot this round</dt><dd>200 TARI</dd></div>
+          <div><dt>Next payout</dt><dd>Chloe · 250 TARI</dd></div>
+        </dl>
+        <ol class="rotation">
+          <li class="done"><span class="turn">1</span><span class="who">Asha</span><span class="state">Paid out</span></li>
+          <li class="done"><span class="turn">2</span><span class="who">Boris</span><span class="state">Paid out</span></li>
+          <li class="current"><span class="turn">3</span><span class="who">Chloe</span><span class="state">Takes this round</span></li>
+          <li><span class="turn">4</span><span class="who">Dev</span><span class="state">Waiting</span></li>
+          <li><span class="turn">5</span><span class="who">You</span><span class="state">Waiting</span></li>
+        </ol>
+        <p class="hero-card-note">No interest, no fees to a middleman, no one holding the money. The contract holds the pot and follows the rotation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section id="how" class="section">
+    <div class="wrap">
+      <h2>How a circle works</h2>
+      <p class="section-lede">A ROSCA is one of the oldest savings habits in the world. Ootle Circle puts its rules on-chain, so no one has to trust the organiser with the money.</p>
+      <div class="steps">
+        <article class="step">
+          <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span>
+          <h3>1. Create a circle</h3>
+          <p>Set a name, a fixed contribution, a round length, and how many members the circle holds. The circle opens for joining.</p>
+        </article>
+        <article class="step">
+          <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <h3>2. Members join</h3>
+          <p>Each member joins with the account that will receive their payout. When the circle fills, round one starts.</p>
+        </article>
+        <article class="step">
+          <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4"/><path d="M16.71 13.88l.7.71-2.82 2.82"/></svg></span>
+          <h3>3. Contribute each round</h3>
+          <p>Every member pays exactly the contribution, once per round, inside the round window. Wrong amounts and double payments are rejected.</p>
+        </article>
+        <article class="step">
+          <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <h3>4. One member takes the pot</h3>
+          <p>When the last member pays, the whole pot goes to the member whose turn it is. After every member has taken the pot once, the circle closes.</p>
+        </article>
+      </div>
+      <div class="honest-box">
+        <h3>What the contract cannot do</h3>
+        <p>It cannot force a member to pay, and it cannot see whether someone meant to pay. If a round stalls because someone stops paying, the only remedy is the creator closing the circle early, which refunds everyone who paid that round. That is the same trust model as a real-world savings circle, and it is stated here on purpose.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo simulator -->
+  <section id="demo" class="section section-alt">
+    <div class="wrap">
+      <h2>Try a circle, right here</h2>
+      <p class="section-lede">This is a walletless simulation of the exact contract rules. No wallet, no network, no real TARI. Create a circle, pay rounds, and watch the pot move.</p>
+
+      <div id="sim-empty" class="sim-empty">
+        <form id="create-form" class="create-form">
+          <div class="field">
+            <label for="f-name">Circle name</label>
+            <input id="f-name" type="text" value="Shillong Friends Circle" maxlength="64" required>
+          </div>
+          <div class="field">
+            <label for="f-contribution">Contribution per round (TARI)</label>
+            <input id="f-contribution" type="number" min="1" max="100000" value="50" required>
+          </div>
+          <div class="field">
+            <label for="f-members">Members (2–8)</label>
+            <input id="f-members" type="number" min="2" max="8" value="5" required>
+          </div>
+          <div class="field">
+            <label for="f-round">Round length (epochs)</label>
+            <input id="f-round" type="number" min="1" max="10000" value="10" required>
+          </div>
+          <div class="field">
+            <label for="f-window">Join window (epochs)</label>
+            <input id="f-window" type="number" min="1" max="10000" value="5" required>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Create circle</button>
+            <button class="btn btn-ghost" type="button" id="btn-preset">Load the preset circle</button>
+          </div>
+          <p class="form-note">You are the creator and member 1. The other members are simulated so you can run a full rotation in a minute.</p>
+        </form>
+      </div>
+
+      <div id="sim-live" class="sim-live" hidden>
+        <div class="sim-grid">
+          <div class="sim-main">
+            <div class="sim-head">
+              <div>
+                <p class="card-label">Circle</p>
+                <h3 id="sim-name">—</h3>
+              </div>
+              <span id="sim-status" class="status">—</span>
+            </div>
+            <dl class="sim-stats">
+              <div><dt>Contribution</dt><dd id="sim-contribution">—</dd></div>
+              <div><dt>Pot</dt><dd id="sim-pot">—</dd></div>
+              <div><dt>Round</dt><dd id="sim-round">—</dd></div>
+              <div><dt>Round ends</dt><dd id="sim-deadline">—</dd></div>
+              <div><dt>Epoch</dt><dd id="sim-epoch">—</dd></div>
+              <div><dt>Next payout</dt><dd id="sim-next">—</dd></div>
+            </dl>
+            <div class="epoch-controls">
+              <span class="epoch-label">Simulated epoch clock</span>
+              <button class="btn btn-small" type="button" id="btn-epoch-1">+1 epoch</button>
+              <button class="btn btn-small" type="button" id="btn-epoch-5">+5 epochs</button>
+              <button class="btn btn-small" type="button" id="btn-epoch-10">+10 epochs</button>
+            </div>
+            <h4>Rotation schedule</h4>
+            <ol id="sim-members" class="rotation rotation-live"></ol>
+            <div class="sim-actions">
+              <button class="btn btn-ghost" type="button" id="btn-close-early">Close early (creator) — refund this round</button>
+              <button class="btn btn-ghost" type="button" id="btn-cancel">Cancel circle</button>
+              <button class="btn btn-ghost" type="button" id="btn-reset">Start over</button>
+            </div>
+            <p id="sim-message" class="sim-message" role="status"></p>
+          </div>
+          <aside class="sim-log">
+            <h4>Circle log</h4>
+            <ol id="sim-events" class="event-log"></ol>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contract -->
+  <section id="contract" class="section">
+    <div class="wrap">
+      <h2>The contract</h2>
+      <p class="section-lede">A Rust template for Tari Ootle, compiled to WASM. The same rules you just tried in the simulator, enforced on-chain.</p>
+      <div class="contract-grid">
+        <article class="contract-card">
+          <h3>What is on-chain</h3>
+          <ul class="check-list">
+            <li>Circle state: name, contribution, round length, member list, pot vault, current round, status.</li>
+            <li>One fixed contribution per member per round, enforced exactly.</li>
+            <li>Automatic payout to the member whose turn it is, the moment the last member pays.</li>
+            <li>Round windows: late contributions are rejected, so a round cannot drag forever.</li>
+            <li>Early close refunds the current round; cancel closes a circle that never fills.</li>
+            <li>Every payout goes to an account that was verified to exist when the member joined.</li>
+          </ul>
+        </article>
+        <article class="contract-card">
+          <h3>Engine tests</h3>
+          <p class="test-count"><strong id="test-count">15 passed, 0 failed</strong> — engine tests against the real Ootle engine, in-process.</p>
+          <ul class="check-list">
+            <li>Full rotation: three members, three rounds, correct payouts, everyone whole at the end.</li>
+            <li>Payout only when everyone has paid; pot holds the partial round until then.</li>
+            <li>Wrong amount, double payment, non-member payment, and wrong-resource payment all rejected.</li>
+            <li>Join twice, join a full circle, pay before active, and pay after the round deadline all rejected.</li>
+            <li>Early close refunds the current round; only the creator can close early.</li>
+            <li>Cancel after the join window; cancel before it is rejected; bad create parameters rejected.</li>
+          </ul>
+          <p class="mono-note">Run them: <code>cargo test</code></p>
+        </article>
+      </div>
+      <div class="contract-links">
+        <a class="btn btn-primary" href="https://github.com/bshemphang/ootle-circle" target="_blank" rel="noopener">Source on GitHub</a>
+        <a class="btn btn-ghost" href="https://ootle.tari.com/" target="_blank" rel="noopener">Ootle docs</a>
+      </div>
+      <div class="onchain-box">
+        <h3>On-chain status</h3>
+        <p>The template is written and tested against the real Ootle engine in-process. It is <strong>not yet published</strong> to Esmeralda testnet or mainnet, so the on-chain path below is ready but not live. Publishing is a signing step the author does from the Tari wallet: build the WASM, publish the template, then paste the template address into this page.</p>
+        <dl class="onchain-facts">
+          <div><dt>Template address</dt><dd>Not published yet</dd></div>
+          <div><dt>Network</dt><dd>Esmeralda testnet first</dd></div>
+          <div><dt>Build</dt><dd><code>cargo build --release --target wasm32-unknown-unknown</code></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="section section-alt">
+    <div class="wrap faq-wrap">
+      <h2>Questions</h2>
+      <details>
+        <summary>Is this real money?</summary>
+        <p>No. The demo on this page is a simulation with play TARI. The contract itself accepts any fungible resource, and on-chain it would hold real TARI. Nothing on this page moves real funds.</p>
+      </details>
+      <details>
+        <summary>What happens if someone stops paying?</summary>
+        <p>The round stalls: no payout happens until everyone has paid. The creator can close the circle early, which refunds everyone who paid that round. Members who already took a payout keep it, because they paid their share in earlier rounds.</p>
+      </details>
+      <details>
+        <summary>Does anyone take a fee?</summary>
+        <p>No. The contract takes no fee. On-chain, the only cost is the network fee for each transaction, paid to Tari validators.</p>
+      </details>
+      <details>
+        <summary>Is the contract audited?</summary>
+        <p>No. It is unaudited. It is tested against the real Ootle engine, but that is not an audit. Do not put money you cannot afford to lose into any unaudited contract, including this one.</p>
+      </details>
+      <details>
+        <summary>Why a fixed contribution?</summary>
+        <p>A ROSCA works because everyone pays the same amount. A variable amount would let one member pay less and still take the full pot, which breaks the circle. The contract rejects any payment that is not exactly the contribution.</p>
+      </details>
+      <details>
+        <summary>Who built this?</summary>
+        <p>x3npai, for the Tari November 2026 MVP contest. The code is MIT licensed and public on GitHub.</p>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div>
+      <p class="footer-brand">Ootle Circle</p>
+      <p class="footer-note">A rotating savings circle on Tari Ootle. Built by x3npai for the Tari November 2026 MVP contest. MIT licensed. Unaudited testnet demo.</p>
+    </div>
+    <nav class="footer-nav">
+      <a href="https://github.com/bshemphang/ootle-circle" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://community.tari.com/t/november-build-contest-thread-mvp/520" target="_blank" rel="noopener">Contest thread</a>
+      <a href="https://ootle.tari.com/" target="_blank" rel="noopener">Ootle docs</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

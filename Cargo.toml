@@ -1,0 +1,21 @@
+[workspace]
+members = ["."]
+exclude = ["templates"]
+
+[package]
+name = "ootle-circle-tests"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+description = "Engine tests for the Ootle Circle template, run against the real Ootle engine in-process"
+
+[dependencies]
+
+[dev-dependencies]
+tari_template_test_tooling = "0.47"
+tari_template_lib = "0.35"
+# Pinned: test_tooling 0.47.0 calls RistrettoSecretKey::from(123) (i32),
+# which tari_crypto 0.24.1 no longer implements. 0.24.0 is the version the
+# reference build (Mzee04/stake) pins and compiles against.
+tari_crypto = "=0.24.0"
