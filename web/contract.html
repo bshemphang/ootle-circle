@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contract - Ootle Circle</title>
+<meta name="description" content="The Ootle Circle contract: a Rust template for Tari Ootle. What is on-chain, the engine tests, and the on-chain status.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28"><circle cx="16" cy="6" r="3.2" fill="#0f766e"/><circle cx="25" cy="13" r="3.2" fill="#0f766e" opacity=".75"/><circle cx="21" cy="24" r="3.2" fill="#0f766e" opacity=".55"/><circle cx="11" cy="24" r="3.2" fill="#0f766e" opacity=".4"/><circle cx="7" cy="13" r="3.2" fill="#0f766e" opacity=".85"/><path d="M16 9.5 22 12.5M25 16.2 22.5 21M18 25.5 14 25.5M9.5 21 8.5 16.2M10 12.5 13.5 9" stroke="#0f766e" stroke-width="1.4" fill="none"/></svg>
+      </span>
+      <span class="brand-name">Ootle Circle</span>
+    </a>
+    <nav class="site-nav">
+      <a href="index.html">Home</a>
+      <a href="simulator.html">Simulator</a>
+      <a href="contract.html" class="active">Contract</a>
+      <a href="learn.html">Learn</a>
+    </nav>
+    <span class="pill pill-testnet">Simulation</span>
+  </div>
+</header>
+
+<main>
+  <section class="page-head">
+    <div class="wrap">
+      <p class="eyebrow">Rust template for Tari Ootle</p>
+      <h1>The contract</h1>
+      <p class="section-lede">The same rules you tried in the simulator, enforced on-chain. One template, one vault, one rotation. No admin key, no fee, no upgrade path.</p>
+    </div>
+  </section>
+
+  <section class="section section-dark" style="padding-top: 56px;">
+    <div class="wrap">
+      <div class="contract-grid">
+        <article class="contract-card">
+          <h3>What is on-chain</h3>
+          <ul class="check-list">
+            <li>Circle state: name, contribution, round length, member list, pot vault, current round, status.</li>
+            <li>One fixed contribution per member per round, enforced exactly.</li>
+            <li>Automatic payout to the member whose turn it is, the moment the last member pays.</li>
+            <li>Round windows: late contributions are rejected, so a round cannot drag forever.</li>
+            <li>Early close refunds the current round; cancel closes a circle that never fills.</li>
+            <li>Every payout goes to an account that was verified to exist when the member joined.</li>
+          </ul>
+        </article>
+        <article class="contract-card">
+          <h3>Engine tests</h3>
+          <p class="test-count"><strong id="test-count">23 passed, 0 failed</strong> - engine tests against the real Ootle engine, in-process.</p>
+          <ul class="check-list">
+            <li>Full rotation: three members, three rounds, correct payouts, everyone whole at the end. A two-member rotation completes too.</li>
+            <li>Payout only when everyone has paid; pot holds the partial round until then.</li>
+            <li>Wrong amount, double payment, non-member payment, and wrong-resource payment all rejected.</li>
+            <li>Join twice, join a full circle, pay before active, and pay after the round deadline all rejected. Join at the exact fill deadline rejected; pay at the exact round deadline allowed.</li>
+            <li>Early close refunds the current round, including with no payers and after the deadline passes; only the creator can close early. Cancel and close-early rejected in the wrong state.</li>
+            <li>Cancel after the join window; cancel before it is rejected; bad create parameters rejected; public view getters report the correct state.</li>
+          </ul>
+          <p class="mono-note">Run them: <code>cargo test</code></p>
+        </article>
+      </div>
+      <div class="contract-links">
+        <a class="btn btn-primary" href="https://github.com/bshemphang/ootle-circle" target="_blank" rel="noopener">Source on GitHub</a>
+        <a class="btn btn-ghost btn-ghost-dark" href="https://ootle.tari.com/" target="_blank" rel="noopener">Ootle docs</a>
+      </div>
+      <div class="onchain-box">
+        <h3>On-chain status</h3>
+        <p>The template is written and tested against the real Ootle engine in-process. It is <strong>not yet published</strong> to Esmeralda testnet or mainnet, so the on-chain path below is ready but not live. Publishing is a signing step the author does from the Tari wallet: build the WASM, publish the template, then paste the template address into this page.</p>
+        <dl class="onchain-facts">
+          <div><dt>Template address</dt><dd>Not published yet</dd></div>
+          <div><dt>Network</dt><dd>Esmeralda testnet first</dd></div>
+          <div><dt>Release WASM</dt><dd>156 KiB</dd></div>
+          <div><dt>Build</dt><dd><code>cargo build --release --target wasm32-unknown-unknown</code></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>How the contract is structured</h2>
+      <p class="section-lede">One template, three ideas. The state, the rules, and the money are kept apart so each one can be checked on its own.</p>
+      <div class="steps">
+        <article class="step">
+          <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>
+          <h3>1. State</h3>
+          <p>The circle holds its name, contribution, round length, member list, pot vault, current round, and status. Nothing else. The state is the whole truth about a circle.</p>
+        </article>
+        <article class="step">
+          <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          <h3>2. Rules</h3>
+          <p>Every call is checked before it touches money: exact amount, one payment per round, member only, inside the round window. A failed check rejects the call and moves nothing.</p>
+        </article>
+        <article class="step">
+          <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4"/><path d="M16.71 13.88l.7.71-2.82 2.82"/></svg></span>
+          <h3>3. The vault</h3>
+          <p>Contributions go into the pot vault. The vault only releases the whole pot, only to the member whose turn it is, only when everyone has paid. There is no partial withdrawal and no admin drain.</p>
+        </article>
+        <article class="step">
+          <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <h3>4. The close</h3>
+          <p>When every member has taken the pot once, the circle closes. If a round stalls, the creator can close early and refund that round. A circle that never fills can be cancelled after its join window.</p>
+        </article>
+      </div>
+      <div class="honest-box">
+        <h3>What the contract cannot do</h3>
+        <p>It cannot force a member to pay, and it cannot see whether someone meant to pay. If a round stalls because someone stops paying, the only remedy is the creator closing the circle early, which refunds everyone who paid that round. That is the same trust model as a real-world savings circle, and it is stated here on purpose. The contract is also unaudited. It is tested against the real Ootle engine, but that is not an audit. Do not put money you cannot afford to lose into any unaudited contract, including this one.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div>
+      <p class="footer-brand">Ootle Circle</p>
+      <p class="footer-note">A rotating savings circle on Tari Ootle. Built by x3npai for the Tari November 2026 MVP contest. MIT licensed. Unaudited testnet demo.</p>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="simulator.html">Simulator</a>
+      <a href="learn.html">Learn</a>
+      <a href="https://github.com/bshemphang/ootle-circle" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

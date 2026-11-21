@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulator - Ootle Circle</title>
+<meta name="description" content="Try an Ootle Circle right here. A walletless simulation of the exact contract rules: create a circle, pay rounds, and watch the pot move.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28"><circle cx="16" cy="6" r="3.2" fill="#0f766e"/><circle cx="25" cy="13" r="3.2" fill="#0f766e" opacity=".75"/><circle cx="21" cy="24" r="3.2" fill="#0f766e" opacity=".55"/><circle cx="11" cy="24" r="3.2" fill="#0f766e" opacity=".4"/><circle cx="7" cy="13" r="3.2" fill="#0f766e" opacity=".85"/><path d="M16 9.5 22 12.5M25 16.2 22.5 21M18 25.5 14 25.5M9.5 21 8.5 16.2M10 12.5 13.5 9" stroke="#0f766e" stroke-width="1.4" fill="none"/></svg>
+      </span>
+      <span class="brand-name">Ootle Circle</span>
+    </a>
+    <nav class="site-nav">
+      <a href="index.html">Home</a>
+      <a href="simulator.html" class="active">Simulator</a>
+      <a href="contract.html">Contract</a>
+      <a href="learn.html">Learn</a>
+    </nav>
+    <span class="pill pill-testnet">Simulation</span>
+  </div>
+</header>
+
+<main>
+  <section class="page-head">
+    <div class="wrap">
+      <p class="eyebrow">Walletless simulation</p>
+      <h1>Try a circle, right here</h1>
+      <p class="section-lede">This is a simulation of the exact contract rules. No wallet, no network, no real TARI. Create a circle, pay rounds, and watch the pot move. Then use the calculator below to plan a circle of your own size.</p>
+    </div>
+  </section>
+
+  <section class="section section-alt" style="padding-top: 40px;">
+    <div class="wrap">
+      <div id="sim-empty" class="sim-empty">
+        <form id="create-form" class="create-form">
+          <div class="field">
+            <label for="f-name">Circle name</label>
+            <input id="f-name" type="text" value="Shillong Friends Circle" maxlength="64" required>
+          </div>
+          <div class="field">
+            <label for="f-contribution">Contribution per round (TARI)</label>
+            <input id="f-contribution" type="number" min="1" max="100000" value="50" required>
+          </div>
+          <div class="field">
+            <label for="f-members">Members (2-8)</label>
+            <input id="f-members" type="number" min="2" max="8" value="5" required>
+          </div>
+          <div class="field">
+            <label for="f-round">Round length (epochs)</label>
+            <input id="f-round" type="number" min="1" max="10000" value="10" required>
+          </div>
+          <div class="field">
+            <label for="f-window">Join window (epochs)</label>
+            <input id="f-window" type="number" min="1" max="10000" value="5" required>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Create circle</button>
+            <button class="btn btn-ghost" type="button" id="btn-preset">Load the preset circle</button>
+          </div>
+          <p class="form-note">You are the creator and member 1. The other members are simulated so you can run a full rotation in a minute.</p>
+        </form>
+      </div>
+
+      <div id="sim-live" class="sim-live" hidden>
+        <div class="sim-grid">
+          <div class="sim-main">
+            <div class="sim-head">
+              <div>
+                <p class="card-label">Circle</p>
+                <h3 id="sim-name">-</h3>
+              </div>
+              <span id="sim-status" class="status">-</span>
+            </div>
+            <dl class="sim-stats">
+              <div><dt>Contribution</dt><dd id="sim-contribution">-</dd></div>
+              <div><dt>Pot</dt><dd id="sim-pot">-</dd></div>
+              <div><dt>Round</dt><dd id="sim-round">-</dd></div>
+              <div><dt>Round ends</dt><dd id="sim-deadline">-</dd></div>
+              <div><dt>Epoch</dt><dd id="sim-epoch">-</dd></div>
+              <div><dt>Next payout</dt><dd id="sim-next">-</dd></div>
+            </dl>
+            <div class="epoch-controls">
+              <span class="epoch-label">Simulated epoch clock</span>
+              <button class="btn btn-small" type="button" id="btn-epoch-1">+1 epoch</button>
+              <button class="btn btn-small" type="button" id="btn-epoch-5">+5 epochs</button>
+              <button class="btn btn-small" type="button" id="btn-epoch-10">+10 epochs</button>
+              <button class="btn btn-small" type="button" id="btn-miss">Simulate a missed payment</button>
+            </div>
+            <h4>Rotation schedule</h4>
+            <ol id="sim-members" class="rotation rotation-live"></ol>
+            <div class="sim-actions">
+              <button class="btn btn-primary" type="button" id="btn-autoplay">Auto-play the full rotation</button>
+              <button class="btn btn-ghost" type="button" id="btn-close-early">Close early (creator) - refund this round</button>
+              <button class="btn btn-ghost" type="button" id="btn-cancel">Cancel circle</button>
+              <button class="btn btn-ghost" type="button" id="btn-reset">Start over</button>
+            </div>
+            <p id="sim-message" class="sim-message" role="status"></p>
+          </div>
+          <aside class="sim-log">
+            <h4>Circle log</h4>
+            <ol id="sim-events" class="event-log"></ol>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Circle calculator -->
+  <section class="section">
+    <div class="wrap">
+      <h2>Plan a circle of your own size</h2>
+      <p class="section-lede">Move the sliders and see the pot, the total each member pays, and what each member takes. The math is the same for every circle: everyone pays the same, everyone takes the pot once.</p>
+      <div class="calc">
+        <div class="calc-controls">
+          <div class="calc-field">
+            <label for="calc-members">Members: <output id="calc-members-out">5</output></label>
+            <input id="calc-members" type="range" min="2" max="12" value="5">
+          </div>
+          <div class="calc-field">
+            <label for="calc-contribution">Contribution per round (TARI): <output id="calc-contribution-out">50</output></label>
+            <input id="calc-contribution" type="range" min="10" max="500" step="10" value="50">
+          </div>
+          <div class="calc-field">
+            <label for="calc-rounds">Round length (days): <output id="calc-rounds-out">7</output></label>
+            <input id="calc-rounds" type="range" min="1" max="30" value="7">
+          </div>
+        </div>
+        <dl class="calc-results">
+          <div><dt>Pot each round</dt><dd id="calc-pot">250 TARI</dd></div>
+          <div><dt>Each member pays in total</dt><dd id="calc-paid">250 TARI</dd></div>
+          <div><dt>Each member receives once</dt><dd id="calc-received">250 TARI</dd></div>
+          <div><dt>Whole circle lasts</dt><dd id="calc-duration">35 days</dd></div>
+        </dl>
+        <p class="calc-note">A circle with more members pays out a bigger pot each round, but each member waits longer for their turn and the circle runs longer. There is no fee in any of these numbers.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rotation stepper -->
+  <section class="section section-alt">
+    <div class="wrap">
+      <h2>Walk the rotation, one round at a time</h2>
+      <p class="section-lede">Step through the preset circle round by round. Each step shows who pays, who takes the pot, and the running balance for every member.</p>
+      <div class="stepper">
+        <div class="stepper-controls">
+          <button class="btn btn-primary" type="button" id="step-next">Next round</button>
+          <button class="btn btn-ghost" type="button" id="step-reset">Restart</button>
+          <span class="stepper-state" id="step-state">Round 0 of 5 - no one has paid yet</span>
+        </div>
+        <ol class="rotation stepper-list" id="step-list"></ol>
+        <p class="stepper-note" id="step-note">Press Next round to run round 1. All five members pay 50 TARI, the pot reaches 250, and Asha takes it.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div>
+      <p class="footer-brand">Ootle Circle</p>
+      <p class="footer-note">A rotating savings circle on Tari Ootle. Built by x3npai for the Tari November 2026 MVP contest. MIT licensed. Unaudited testnet demo.</p>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="contract.html">Contract</a>
+      <a href="learn.html">Learn</a>
+      <a href="https://github.com/bshemphang/ootle-circle" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script src="calculator.js"></script>
+<script src="stepper.js"></script>
+</body>
+</html>
