@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ootle Circle - Rotating savings circles on Tari</title>
-<meta name="description" content="Ootle Circle is a rotating savings circle (ROSCA) on Tari Ootle. Members contribute a fixed amount of TARI every round; each round one member, in rotation, takes the whole pot. Testnet demo.">
+<meta name="description" content="Ootle Circle is a rotating savings circle (ROSCA) on Tari Ootle. Members contribute a fixed amount of TARI every round; each round one member, in rotation, takes the whole pot.">
 <meta property="og:title" content="Ootle Circle - Rotating savings circles on Tari">
 <meta property="og:description" content="Save together. Take turns. A ROSCA on Tari Ootle: fixed contributions, one payout per round, everyone whole at the end.">
 <meta property="og:type" content="website">
@@ -49,28 +49,68 @@
           <li><span class="dot"></span>Built by x3npai</li>
         </ul>
       </div>
-      <div class="hero-card" aria-label="Example circle">
-        <div class="hero-card-head">
-          <div>
-            <p class="card-label">Example circle</p>
-            <p class="card-title">Shillong Friends Circle</p>
-          </div>
-          <span class="status status-active">Active · Round 2 of 5</span>
-        </div>
-        <dl class="hero-stats">
-          <div><dt>Contribution</dt><dd>50 TARI</dd></div>
-          <div><dt>Pot this round</dt><dd>200 TARI</dd></div>
-          <div><dt>Next payout</dt><dd>Chloe<br>250 TARI</dd></div>
-        </dl>
-        <ol class="rotation">
-          <li class="done"><span class="turn">1</span><span class="who">Asha</span><span class="state">Paid out</span></li>
-          <li class="done"><span class="turn">2</span><span class="who">Boris</span><span class="state">Paid out</span></li>
-          <li class="current"><span class="turn">3</span><span class="who">Chloe</span><span class="state">Takes this round</span></li>
-          <li><span class="turn">4</span><span class="who">Dev</span><span class="state">Waiting</span></li>
-          <li><span class="turn">5</span><span class="who">You</span><span class="state">Waiting</span></li>
-        </ol>
-        <p class="hero-card-note">No interest, no fees to a middleman, no one holding the money. The contract holds the pot and follows the rotation.</p>
+      <div class="hero-visual" aria-label="Rotation diagram for the example circle">
+        <svg class="rotation-diagram" viewBox="0 0 340 340" role="img" aria-label="Five members in a circle. Each round one member takes the 250 TARI pot.">
+          <defs>
+            <marker id="arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0L10 5L0 10z" fill="#0f766e"/>
+            </marker>
+          </defs>
+          <circle cx="170" cy="170" r="118" fill="none" stroke="#d8d3c7" stroke-width="1.5" stroke-dasharray="3 6"/>
+          <path d="M170 52 A118 118 0 0 1 278 134" fill="none" stroke="#0f766e" stroke-width="2" marker-end="url(#arrow-teal)"/>
+          <path d="M278 206 A118 118 0 0 1 188 287" fill="none" stroke="#0f766e" stroke-width="2" marker-end="url(#arrow-teal)"/>
+          <path d="M152 287 A118 118 0 0 1 62 206" fill="none" stroke="#0f766e" stroke-width="2" marker-end="url(#arrow-teal)"/>
+          <path d="M62 134 A118 118 0 0 1 170 52" fill="none" stroke="#0f766e" stroke-width="2" marker-end="url(#arrow-teal)"/>
+          <g class="node done">
+            <circle cx="170" cy="52" r="24" fill="#e6f2f0" stroke="#0f766e" stroke-width="1.5"/>
+            <text x="170" y="57" text-anchor="middle" class="node-num">1</text>
+            <text x="170" y="20" text-anchor="middle" class="node-name">Asha</text>
+          </g>
+          <g class="node done">
+            <circle cx="278" cy="134" r="24" fill="#e6f2f0" stroke="#0f766e" stroke-width="1.5"/>
+            <text x="278" y="139" text-anchor="middle" class="node-num">2</text>
+            <text x="312" y="139" text-anchor="middle" class="node-name">Boris</text>
+          </g>
+          <g class="node current">
+            <circle cx="239" cy="264" r="26" fill="#0f766e" stroke="#0b5d57" stroke-width="1.5"/>
+            <text x="239" y="270" text-anchor="middle" class="node-num current">3</text>
+            <text x="239" y="308" text-anchor="middle" class="node-name">Chloe</text>
+          </g>
+          <g class="node">
+            <circle cx="101" cy="264" r="24" fill="#fff" stroke="#d8d3c7" stroke-width="1.5"/>
+            <text x="101" y="269" text-anchor="middle" class="node-num">4</text>
+            <text x="101" y="308" text-anchor="middle" class="node-name">Dev</text>
+          </g>
+          <g class="node">
+            <circle cx="62" cy="134" r="24" fill="#fff" stroke="#d8d3c7" stroke-width="1.5"/>
+            <text x="62" y="139" text-anchor="middle" class="node-num">5</text>
+            <text x="28" y="139" text-anchor="middle" class="node-name">You</text>
+          </g>
+          <g class="pot">
+            <text x="170" y="162" text-anchor="middle" class="pot-amount">250 TARI</text>
+            <text x="170" y="182" text-anchor="middle" class="pot-label">the pot, this round</text>
+            <text x="170" y="202" text-anchor="middle" class="pot-next">Next: Chloe</text>
+          </g>
+        </svg>
+        <p class="hero-visual-caption">Round 2 of 5. Asha and Boris have taken the pot. Chloe takes it this round.</p>
       </div>
+    </div>
+  </section>
+
+  <!-- Example circle strip -->
+  <section class="strip">
+    <div class="wrap strip-inner">
+      <div class="strip-card">
+        <p class="card-label">Example circle</p>
+        <p class="card-title">Shillong Friends Circle</p>
+        <p class="strip-note">No interest, no fees to a middleman, no one holding the money. The contract holds the pot and follows the rotation.</p>
+      </div>
+      <dl class="strip-stats">
+        <div><dt>Contribution</dt><dd>50 TARI</dd></div>
+        <div><dt>Pot this round</dt><dd>200 TARI</dd></div>
+        <div><dt>Next payout</dt><dd>Chloe · 250 TARI</dd></div>
+        <div><dt>Status</dt><dd>Active · Round 2 of 5</dd></div>
+      </dl>
     </div>
   </section>
 
@@ -136,7 +176,7 @@
             <input id="f-contribution" type="number" min="1" max="100000" value="50" required>
           </div>
           <div class="field">
-            <label for="f-members">Members (2–8)</label>
+            <label for="f-members">Members (2-8)</label>
             <input id="f-members" type="number" min="2" max="8" value="5" required>
           </div>
           <div class="field">
@@ -200,7 +240,7 @@
   </section>
 
   <!-- Contract -->
-  <section id="contract" class="section">
+  <section id="contract" class="section section-dark">
     <div class="wrap">
       <h2>The contract</h2>
       <p class="section-lede">A Rust template for Tari Ootle, compiled to WASM. The same rules you just tried in the simulator, enforced on-chain.</p>
@@ -232,7 +272,7 @@
       </div>
       <div class="contract-links">
         <a class="btn btn-primary" href="https://github.com/bshemphang/ootle-circle" target="_blank" rel="noopener">Source on GitHub</a>
-        <a class="btn btn-ghost" href="https://ootle.tari.com/" target="_blank" rel="noopener">Ootle docs</a>
+        <a class="btn btn-ghost btn-ghost-dark" href="https://ootle.tari.com/" target="_blank" rel="noopener">Ootle docs</a>
       </div>
       <div class="onchain-box">
         <h3>On-chain status</h3>
