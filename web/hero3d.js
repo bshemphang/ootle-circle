@@ -32,17 +32,45 @@
   rim.position.set(-5, 2, -4);
   scene.add(rim);
 
-  // The pot: a short teal vessel with a gold glow disc, low in the frame
+  // The pot: a lathed teal vessel with a belly, a flared lip, and a gold rim,
+  // low in the frame. The lathe profile gives it a crafted shape, not a cone.
   var potGroup = new THREE.Group();
-  var potGeo = new THREE.CylinderGeometry(1.05, 0.8, 0.75, 48);
+  var potProfile = [
+    new THREE.Vector2(0.00, -0.38),
+    new THREE.Vector2(0.55, -0.38),
+    new THREE.Vector2(0.78, -0.34),
+    new THREE.Vector2(0.92, -0.22),
+    new THREE.Vector2(1.00, -0.05),
+    new THREE.Vector2(1.04, 0.12),
+    new THREE.Vector2(1.00, 0.26),
+    new THREE.Vector2(1.10, 0.33),
+    new THREE.Vector2(1.13, 0.37),
+    new THREE.Vector2(1.04, 0.38),
+    new THREE.Vector2(0.98, 0.34)
+  ];
+  var potGeo = new THREE.LatheGeometry(potProfile, 64);
   var potMat = new THREE.MeshStandardMaterial({ color: 0x0f766e, metalness: 0.55, roughness: 0.35 });
   var pot = new THREE.Mesh(potGeo, potMat);
   potGroup.add(pot);
+  // Gold rim around the lip
+  var potRimGeo = new THREE.TorusGeometry(1.08, 0.035, 12, 64);
+  var potRimMat = new THREE.MeshStandardMaterial({ color: 0xd4a94e, metalness: 0.6, roughness: 0.3 });
+  var potRim = new THREE.Mesh(potRimGeo, potRimMat);
+  potRim.rotation.x = Math.PI / 2;
+  potRim.position.y = 0.37;
+  potGroup.add(potRim);
+  // Dark teal band around the belly
+  var potBandGeo = new THREE.TorusGeometry(1.005, 0.018, 8, 64);
+  var potBandMat = new THREE.MeshStandardMaterial({ color: 0x0a4f49, metalness: 0.5, roughness: 0.4 });
+  var potBand = new THREE.Mesh(potBandGeo, potBandMat);
+  potBand.rotation.x = Math.PI / 2;
+  potBand.position.y = -0.05;
+  potGroup.add(potBand);
   var glowGeo = new THREE.CircleGeometry(0.9, 48);
   var glowMat = new THREE.MeshBasicMaterial({ color: 0xd4a94e, transparent: true, opacity: 0.9 });
   var glow = new THREE.Mesh(glowGeo, glowMat);
   glow.rotation.x = -Math.PI / 2;
-  glow.position.y = 0.38;
+  glow.position.y = 0.36;
   potGroup.add(glow);
   var potLight = new THREE.PointLight(0xd4a94e, 1.2, 7);
   potLight.position.y = 1.4;
@@ -50,7 +78,9 @@
   potGroup.position.y = -1.5;
   scene.add(potGroup);
 
-  // The hero coin: one large gold coin above the pot, edge-on to the camera
+  // The hero coin: one large gold coin above the pot, edge-on to the camera.
+  // The face is embossed, not flat: an outer rim ring, an inner ring, a raised
+  // center medallion with a T mint mark on each face, and a reeded edge.
   var coinGroup = new THREE.Group();
   var coinGeo = new THREE.CylinderGeometry(1.15, 1.15, 0.14, 64);
   var coinMat = new THREE.MeshStandardMaterial({ color: 0xd4a94e, metalness: 0.55, roughness: 0.3 });
@@ -66,6 +96,44 @@
   var rimBottom = rimTop.clone();
   rimBottom.position.y = -0.075;
   coinGroup.add(rimBottom);
+  // Embossed face detail, built once per face (sign +1 top, -1 bottom)
+  var embossMat = new THREE.MeshStandardMaterial({ color: 0xc49a3f, metalness: 0.6, roughness: 0.32 });
+  var markMat = new THREE.MeshStandardMaterial({ color: 0xe8c96a, metalness: 0.65, roughness: 0.25 });
+  function buildFace(sign) {
+    // Inner embossed ring
+    var innerGeo = new THREE.TorusGeometry(0.55, 0.025, 10, 64);
+    var inner = new THREE.Mesh(innerGeo, embossMat);
+    inner.rotation.x = Math.PI / 2;
+    inner.position.y = sign * 0.075;
+    coinGroup.add(inner);
+    // Raised center medallion
+    var medGeo = new THREE.CylinderGeometry(0.30, 0.30, 0.03, 32);
+    var med = new THREE.Mesh(medGeo, embossMat);
+    med.position.y = sign * 0.085;
+    coinGroup.add(med);
+    // T mint mark, raised on the medallion
+    var stemGeo = new THREE.BoxGeometry(0.09, 0.02, 0.24);
+    var stem = new THREE.Mesh(stemGeo, markMat);
+    stem.position.y = sign * 0.11;
+    coinGroup.add(stem);
+    var barGeo = new THREE.BoxGeometry(0.22, 0.02, 0.08);
+    var bar = new THREE.Mesh(barGeo, markMat);
+    bar.position.y = sign * 0.11;
+    bar.position.z = 0.085;
+    coinGroup.add(bar);
+  }
+  buildFace(1);
+  buildFace(-1);
+  // Reeded edge: 48 small ridges around the rim
+  var reedGeo = new THREE.BoxGeometry(0.05, 0.16, 0.05);
+  var reedMat = new THREE.MeshStandardMaterial({ color: 0xb8933a, metalness: 0.6, roughness: 0.35 });
+  for (var i = 0; i < 48; i++) {
+    var a = (i / 48) * Math.PI * 2;
+    var reed = new THREE.Mesh(reedGeo, reedMat);
+    reed.position.set(1.15 * Math.cos(a), 0, 1.15 * Math.sin(a));
+    reed.rotation.y = -a;
+    coinGroup.add(reed);
+  }
   coinGroup.position.y = 0.9;
   coinGroup.rotation.x = 0.5;
   scene.add(coinGroup);

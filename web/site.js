@@ -5,25 +5,11 @@
 
   function fmt(n) { return n.toLocaleString("en-US"); }
 
-  // Count-up for the hero total (1,250 TARI through one full circle)
+  // Hero number is static: the current pot (250 TARI), labelled in the HTML.
+  // No count-up animation; the number is the real balance, not decoration.
   var countEl = document.getElementById("count-total");
   if (countEl) {
-    var target = 1250;
-    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      countEl.textContent = fmt(target);
-    } else {
-      var start = null;
-      var dur = 1400;
-      var step = function (ts) {
-        if (!start) start = ts;
-        var p = Math.min(1, (ts - start) / dur);
-        var eased = 1 - Math.pow(1 - p, 3);
-        countEl.textContent = fmt(Math.round(target * eased));
-        if (p < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    }
+    countEl.textContent = fmt(250);
   }
 
   // Scroll reveals (once only, staggered via inline transition-delay where set)

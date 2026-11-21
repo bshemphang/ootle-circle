@@ -38,10 +38,13 @@
       <div class="hero-copy">
         <p class="eyebrow">A rotating savings circle on Tari Ootle</p>
         <div class="hero-number">
-          <div class="num tnum"><span id="count-total">0</span> <span class="unit">TARI</span></div>
-          <p class="cap">moves through one full 5-member circle. 5 members x 50 TARI x 5 rounds. Counted up live.</p>
+          <p class="pot-eyebrow">Current pot, round 2 of 5</p>
+          <div class="num tnum"><span id="count-total">250</span> <span class="unit">TARI</span></div>
+          <p class="next-payout">Next payout: <strong>Member 3</strong>, in 6 days.</p>
+          <p class="cap">1,250 TARI moves through one full 5-member circle. 5 members x 50 TARI x 5 rounds.</p>
         </div>
         <h1>Save together.<br><em>Take turns.</em></h1>
+        <p class="rotation-explainer">Each round, 5 members contribute 50 TARI. A different member receives the 250 TARI pot.</p>
         <p class="lede">Five friends, 50 TARI each, every round. Each round one member takes the whole pot, in rotation. When everyone has taken the pot once, the circle closes and everyone is whole.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="simulator.html">Try the demo circle <span class="arrow" aria-hidden="true">&rarr;</span></a>
@@ -82,6 +85,51 @@
           <text x="36" y="41" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="15" font-weight="600" fill="#1b1a17">2/5</text>
         </svg>
         <div><div class="ring-num">Round 2 of 5</div><div class="ring-cap">500 TARI paid out so far</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cycle timeline: who paid, who is current, who is next -->
+  <section class="section cycle-section" aria-label="The cycle, round by round">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <span class="section-num">00 / THE CYCLE</span>
+          <h2>The cycle, round by round</h2>
+        </div>
+        <p class="section-lede">Five rounds, one payout each. Two are done, Chloe takes this round, and the last slot is open.</p>
+      </div>
+      <div class="cycle-timeline reveal" id="cycle-timeline">
+        <div class="cycle-row done">
+          <span class="cycle-round">Round 1</span>
+          <span class="cycle-who">Asha <small>Member 1</small></span>
+          <span class="cycle-amt">250 TARI</span>
+          <span class="cycle-status">Paid out</span>
+        </div>
+        <div class="cycle-row done">
+          <span class="cycle-round">Round 2</span>
+          <span class="cycle-who">Boris <small>Member 2</small></span>
+          <span class="cycle-amt">250 TARI</span>
+          <span class="cycle-status">Paid out</span>
+        </div>
+        <div class="cycle-row current">
+          <span class="cycle-round">Round 3</span>
+          <span class="cycle-who">Chloe <small>Member 3</small></span>
+          <span class="cycle-amt">250 TARI</span>
+          <span class="cycle-status">Receives in 6 days</span>
+        </div>
+        <div class="cycle-row next">
+          <span class="cycle-round">Round 4</span>
+          <span class="cycle-who">Dev <small>Member 4</small></span>
+          <span class="cycle-amt">250 TARI</span>
+          <span class="cycle-status">Round 4</span>
+        </div>
+        <div class="cycle-row next">
+          <span class="cycle-round">Round 5</span>
+          <span class="cycle-who">You <small>Member 5</small></span>
+          <span class="cycle-amt">250 TARI</span>
+          <span class="cycle-status"><a class="cycle-join" href="simulator.html">Join this slot &rarr;</a></span>
+        </div>
       </div>
     </div>
   </section>
