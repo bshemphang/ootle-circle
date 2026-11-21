@@ -9,17 +9,17 @@
 //! that amount once.
 //!
 //! Lifecycle:
-//! * `create` — the creator opens a circle with a name, a fixed contribution,
+//! * `create` - the creator opens a circle with a name, a fixed contribution,
 //!   a round length (in consensus epochs), a member count, and a join window.
 //!   Status is `"filling"`.
-//! * `join` — members join with the account that will receive their payout.
+//! * `join` - members join with the account that will receive their payout.
 //!   When the circle fills, it becomes `"active"` and round 0 starts.
-//! * `contribute` — each member pays exactly the contribution once per round,
+//! * `contribute` - each member pays exactly the contribution once per round,
 //!   inside the round window. When the last member pays, the pot is paid out
 //!   automatically to the member whose turn it is, and the next round starts.
-//! * `close_early` — creator only, while active: refunds this round's payers
+//! * `close_early` - creator only, while active: refunds this round's payers
 //!   and closes the circle as `"refunded"`.
-//! * `cancel` — anyone, while filling, once the join window has passed:
+//! * `cancel` - anyone, while filling, once the join window has passed:
 //!   closes the circle as `"cancelled"`. No funds are ever collected while a
 //!   circle is filling, so there is nothing to refund on this path.
 //!
@@ -101,11 +101,11 @@ mod circle {
     impl Circle {
         /// Open a circle. The transaction signer is the creator.
         ///
-        /// * `name` — 1 to 64 characters, shown on the page.
-        /// * `contribution` — the fixed amount every member pays every round.
-        /// * `epoch_length` — how long each round lasts, in consensus epochs.
-        /// * `max_members` — the circle starts when this many members join (2–64).
-        /// * `join_window_epochs` — how long the circle stays open for joining.
+        /// * `name` - 1 to 64 characters, shown on the page.
+        /// * `contribution` - the fixed amount every member pays every round.
+        /// * `epoch_length` - how long each round lasts, in consensus epochs.
+        /// * `max_members` - the circle starts when this many members join (2–64).
+        /// * `join_window_epochs` - how long the circle stays open for joining.
         pub fn create(
             name: String,
             contribution: Amount,

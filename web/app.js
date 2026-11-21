@@ -1,4 +1,4 @@
-// Ootle Circle — walletless simulator.
+// Ootle Circle - walletless simulator.
 // Mirrors the on-chain contract rules exactly: fixed contribution, one payment
 // per member per round, automatic payout when everyone has paid, round
 // windows, early-close refunds, and cancel after the join window.
@@ -62,7 +62,7 @@
     S.status = "active";
     S.roundStartedEpoch = S.epoch;
     log("Circle is full. Round 1 starts at epoch " + S.epoch + "; contributions close at epoch " + roundDeadline() + ".");
-    setMessage("Circle is active. Round 1 of " + S.maxMembers + " — every member pays " + fmt(S.contribution) + " TARI.");
+    setMessage("Circle is active. Round 1 of " + S.maxMembers + " - every member pays " + fmt(S.contribution) + " TARI.");
     render();
   }
 
@@ -87,12 +87,12 @@
     winner.balance += amount;
     S.pot = 0;
     log("Round " + (S.currentRound + 1) + " complete. " + winner.name + " takes the pot: " + fmt(amount) + " TARI.");
-    setMessage("Round " + (S.currentRound + 1) + " complete — " + winner.name + " takes " + fmt(amount) + " TARI.");
+    setMessage("Round " + (S.currentRound + 1) + " complete - " + winner.name + " takes " + fmt(amount) + " TARI.");
     S.currentRound += 1;
     if (S.currentRound >= S.members.length) {
       S.status = "closed";
-      log("Every member has taken the pot once. The circle is closed — everyone paid " + fmt(S.contribution * S.members.length) + " TARI in total and received " + fmt(S.contribution * S.members.length) + " TARI once.");
-      setMessage("Circle closed. Everyone paid " + fmt(S.contribution * S.members.length) + " TARI and took the pot once — everyone is whole.");
+      log("Every member has taken the pot once. The circle is closed - everyone paid " + fmt(S.contribution * S.members.length) + " TARI in total and received " + fmt(S.contribution * S.members.length) + " TARI once.");
+      setMessage("Circle closed. Everyone paid " + fmt(S.contribution * S.members.length) + " TARI and took the pot once - everyone is whole.");
     } else {
       S.roundStartedEpoch = S.epoch;
       log("Round " + (S.currentRound + 1) + " starts. Next payout: " + S.members[S.currentRound].name + ". Contributions close at epoch " + roundDeadline() + ".");
@@ -136,7 +136,41 @@
     render();
   }
 
+  function missPayment() {
+    if (!S || S.status !== "active") return setMessage("Start a circle and fill it first, then a missed payment can stall a round.", true);
+    var unpaid = S.members.filter(function (m) { return m.paidRound !== S.currentRound; }).map(function (m) { return m.name; });
+    if (unpaid.length === 0) return setMessage("Everyone has already paid this round, so nothing is missed.", true);
+    var jump = roundDeadline() + 1 - S.epoch;
+    if (jump <= 0) return setMessage("This round's window has already closed.", true);
+    log("Missed payment: " + unpaid.join(", ") + " did not pay round " + (S.currentRound + 1) + " before the window closed.");
+    advanceEpoch(jump);
+  }
+
+  var autoTimer = null;
+
+  function autoplay() {
+    if (!S || S.status !== "active") return setMessage("Start a circle and fill it first, then auto-play can run the rotation.", true);
+    if (autoTimer) return;
+    setMessage("Auto-playing the full rotation. Watch the log and the balances.");
+    var step = function () {
+      if (!S || S.status !== "active") { autoTimer = null; render(); return; }
+      var next = -1;
+      for (var i = 0; i < S.members.length; i++) {
+        if (S.members[i].paidRound !== S.currentRound) { next = i; break; }
+      }
+      if (next < 0) { autoTimer = null; render(); return; }
+      pay(next);
+      if (S && S.status === "active") {
+        autoTimer = setTimeout(step, 450);
+      } else {
+        autoTimer = null;
+      }
+    };
+    autoTimer = setTimeout(step, 450);
+  }
+
   function reset() {
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
     S = null;
     $("sim-live").hidden = true;
     $("sim-empty").hidden = false;
@@ -181,11 +215,11 @@
       : (S.currentRound + 1) + " of " + S.members.length;
     $("sim-deadline").textContent = S.status === "active"
       ? "Epoch " + roundDeadline()
-      : (S.status === "filling" ? "Epoch " + S.fillDeadline + " (join window)" : "—");
+      : (S.status === "filling" ? "Epoch " + S.fillDeadline + " (join window)" : "-");
     $("sim-epoch").textContent = "Epoch " + S.epoch;
     var next = (S.status === "active" && S.members[S.currentRound])
       ? S.members[S.currentRound].name + " · " + fmt(S.contribution * S.members.length) + " TARI"
-      : "—";
+      : "-";
     $("sim-next").textContent = next;
 
     var list = $("sim-members");
@@ -252,6 +286,7 @@
 
     $("btn-close-early").disabled = S.status !== "active";
     $("btn-cancel").disabled = !(S.status === "filling" && S.epoch >= S.fillDeadline);
+    $("btn-autoplay").disabled = S.status !== "active" || !!autoTimer;
   }
 
   function showLive() {
@@ -289,6 +324,8 @@
   $("btn-epoch-1").addEventListener("click", function () { advanceEpoch(1); });
   $("btn-epoch-5").addEventListener("click", function () { advanceEpoch(5); });
   $("btn-epoch-10").addEventListener("click", function () { advanceEpoch(10); });
+  $("btn-miss").addEventListener("click", missPayment);
+  $("btn-autoplay").addEventListener("click", autoplay);
   $("btn-close-early").addEventListener("click", closeEarly);
   $("btn-cancel").addEventListener("click", cancel);
   $("btn-reset").addEventListener("click", reset);

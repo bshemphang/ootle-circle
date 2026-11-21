@@ -3,15 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ootle Circle — Rotating savings circles on Tari</title>
+<title>Ootle Circle - Rotating savings circles on Tari</title>
 <meta name="description" content="Ootle Circle is a rotating savings circle (ROSCA) on Tari Ootle. Members contribute a fixed amount of TARI every round; each round one member, in rotation, takes the whole pot. Testnet demo.">
-<meta property="og:title" content="Ootle Circle — Rotating savings circles on Tari">
+<meta property="og:title" content="Ootle Circle - Rotating savings circles on Tari">
 <meta property="og:description" content="Save together. Take turns. A ROSCA on Tari Ootle: fixed contributions, one payout per round, everyone whole at the end.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -29,7 +27,7 @@
       <a href="#contract">Contract</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <span class="pill pill-testnet">Testnet demo</span>
+    <span class="pill pill-testnet">Simulation</span>
   </div>
 </header>
 
@@ -46,7 +44,7 @@
           <a class="btn btn-ghost" href="#contract">Read the contract</a>
         </div>
         <ul class="hero-badges">
-          <li><span class="dot"></span>Unaudited — testnet demo</li>
+          <li><span class="dot"></span>Unaudited - walletless simulation</li>
           <li><span class="dot"></span>MIT licensed</li>
           <li><span class="dot"></span>Built by x3npai</li>
         </ul>
@@ -102,6 +100,16 @@
           <h3>4. One member takes the pot</h3>
           <p>When the last member pays, the whole pot goes to the member whose turn it is. After every member has taken the pot once, the circle closes.</p>
         </article>
+      <div class="math-strip">
+        <h3>The math, in one circle</h3>
+        <p>Take the preset circle below: 5 members, 50 TARI each, every round.</p>
+        <dl class="math-facts">
+          <div><dt>Pot each round</dt><dd>5 x 50 = 250 TARI</dd></div>
+          <div><dt>Rounds</dt><dd>5, one payout each</dd></div>
+          <div><dt>Each member pays</dt><dd>50 x 5 = 250 TARI total</dd></div>
+          <div><dt>Each member receives</dt><dd>250 TARI once</dd></div>
+          <div><dt>Net at the end</dt><dd>Everyone whole, no interest, no fee</dd></div>
+        </dl>
       </div>
       <div class="honest-box">
         <h3>What the contract cannot do</h3>
@@ -152,28 +160,30 @@
             <div class="sim-head">
               <div>
                 <p class="card-label">Circle</p>
-                <h3 id="sim-name">—</h3>
+                <h3 id="sim-name">-</h3>
               </div>
-              <span id="sim-status" class="status">—</span>
+              <span id="sim-status" class="status">-</span>
             </div>
             <dl class="sim-stats">
-              <div><dt>Contribution</dt><dd id="sim-contribution">—</dd></div>
-              <div><dt>Pot</dt><dd id="sim-pot">—</dd></div>
-              <div><dt>Round</dt><dd id="sim-round">—</dd></div>
-              <div><dt>Round ends</dt><dd id="sim-deadline">—</dd></div>
-              <div><dt>Epoch</dt><dd id="sim-epoch">—</dd></div>
-              <div><dt>Next payout</dt><dd id="sim-next">—</dd></div>
+              <div><dt>Contribution</dt><dd id="sim-contribution">-</dd></div>
+              <div><dt>Pot</dt><dd id="sim-pot">-</dd></div>
+              <div><dt>Round</dt><dd id="sim-round">-</dd></div>
+              <div><dt>Round ends</dt><dd id="sim-deadline">-</dd></div>
+              <div><dt>Epoch</dt><dd id="sim-epoch">-</dd></div>
+              <div><dt>Next payout</dt><dd id="sim-next">-</dd></div>
             </dl>
             <div class="epoch-controls">
               <span class="epoch-label">Simulated epoch clock</span>
               <button class="btn btn-small" type="button" id="btn-epoch-1">+1 epoch</button>
               <button class="btn btn-small" type="button" id="btn-epoch-5">+5 epochs</button>
               <button class="btn btn-small" type="button" id="btn-epoch-10">+10 epochs</button>
+              <button class="btn btn-small" type="button" id="btn-miss">Simulate a missed payment</button>
             </div>
             <h4>Rotation schedule</h4>
             <ol id="sim-members" class="rotation rotation-live"></ol>
             <div class="sim-actions">
-              <button class="btn btn-ghost" type="button" id="btn-close-early">Close early (creator) — refund this round</button>
+              <button class="btn btn-primary" type="button" id="btn-autoplay">Auto-play the full rotation</button>
+              <button class="btn btn-ghost" type="button" id="btn-close-early">Close early (creator) - refund this round</button>
               <button class="btn btn-ghost" type="button" id="btn-cancel">Cancel circle</button>
               <button class="btn btn-ghost" type="button" id="btn-reset">Start over</button>
             </div>
@@ -207,14 +217,14 @@
         </article>
         <article class="contract-card">
           <h3>Engine tests</h3>
-          <p class="test-count"><strong id="test-count">15 passed, 0 failed</strong> — engine tests against the real Ootle engine, in-process.</p>
+          <p class="test-count"><strong id="test-count">23 passed, 0 failed</strong> - engine tests against the real Ootle engine, in-process.</p>
           <ul class="check-list">
-            <li>Full rotation: three members, three rounds, correct payouts, everyone whole at the end.</li>
+            <li>Full rotation: three members, three rounds, correct payouts, everyone whole at the end. A two-member rotation completes too.</li>
             <li>Payout only when everyone has paid; pot holds the partial round until then.</li>
             <li>Wrong amount, double payment, non-member payment, and wrong-resource payment all rejected.</li>
-            <li>Join twice, join a full circle, pay before active, and pay after the round deadline all rejected.</li>
-            <li>Early close refunds the current round; only the creator can close early.</li>
-            <li>Cancel after the join window; cancel before it is rejected; bad create parameters rejected.</li>
+            <li>Join twice, join a full circle, pay before active, and pay after the round deadline all rejected. Join at the exact fill deadline rejected; pay at the exact round deadline allowed.</li>
+            <li>Early close refunds the current round, including with no payers and after the deadline passes; only the creator can close early. Cancel and close-early rejected in the wrong state.</li>
+            <li>Cancel after the join window; cancel before it is rejected; bad create parameters rejected; public view getters report the correct state.</li>
           </ul>
           <p class="mono-note">Run them: <code>cargo test</code></p>
         </article>
@@ -229,6 +239,7 @@
         <dl class="onchain-facts">
           <div><dt>Template address</dt><dd>Not published yet</dd></div>
           <div><dt>Network</dt><dd>Esmeralda testnet first</dd></div>
+          <div><dt>Release WASM</dt><dd>156 KiB</dd></div>
           <div><dt>Build</dt><dd><code>cargo build --release --target wasm32-unknown-unknown</code></dd></div>
         </dl>
       </div>

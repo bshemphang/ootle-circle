@@ -6,16 +6,16 @@ Built for the [Tari November 2026 MVP contest](https://community.tari.com/t/nove
 
 ## Live demo
 
-**Demo: _coming soon — deploying to Cloudflare Pages_**
+**Live demo: [ootle-circle.bshemphang.workers.dev](https://ootle-circle.bshemphang.workers.dev/)**
 
 The demo is a walletless simulation of the exact contract rules: create a circle, join, pay rounds, watch the pot move. No wallet, no network, no real TARI.
 
 ## How a circle works
 
-1. **Create** — set a name, a fixed contribution, a round length (in consensus epochs), a member count, and a join window.
-2. **Join** — each member joins with the account that will receive their payout. When the circle fills, round one starts.
-3. **Contribute** — every member pays exactly the contribution, once per round, inside the round window. Wrong amounts, double payments, and late payments are rejected.
-4. **Take the pot** — when the last member pays, the whole pot goes to the member whose turn it is. After every member has taken the pot once, the circle closes.
+1. **Create** - set a name, a fixed contribution, a round length (in consensus epochs), a member count, and a join window.
+2. **Join** - each member joins with the account that will receive their payout. When the circle fills, round one starts.
+3. **Contribute** - every member pays exactly the contribution, once per round, inside the round window. Wrong amounts, double payments, and late payments are rejected.
+4. **Take the pot** - when the last member pays, the whole pot goes to the member whose turn it is. After every member has taken the pot once, the circle closes.
 
 If a round stalls because someone stops paying, the creator can close the circle early, which refunds everyone who paid that round. A circle that never fills can be cancelled once its join window passes; no funds are ever collected while filling, so there is nothing to refund on that path.
 
@@ -39,7 +39,7 @@ cargo build --release --target wasm32-unknown-unknown
 cargo test
 ```
 
-The tests run against the real Ootle engine in-process (`tari_template_test_tooling`). **15 tests, 15 passed, 0 failed.** They cover: a full rotation with correct payouts, payout only when everyone has paid, wrong-amount / double / non-member / wrong-resource payments rejected, join twice / join a full circle / pay before active / pay after the round deadline rejected, early-close refunds, cancel after the join window, and bad create parameters.
+The tests run against the real Ootle engine in-process (`tari_template_test_tooling`). **23 tests, 23 passed, 0 failed.** They cover: a full rotation with correct payouts (3 members and 2 members), payout only when everyone has paid, wrong-amount / double / non-member / wrong-resource payments rejected, join twice / join a full circle / pay before active / pay after the round deadline rejected, join at the exact fill deadline rejected, pay at the exact round deadline allowed, early-close refunds (including with no payers this round and after the deadline passes), cancel after the join window, cancel and close-early rejected in the wrong state, the public view getters, and bad create parameters.
 
 The release WASM is 156 KiB (`templates/circle/target/wasm32-unknown-unknown/release/circle.wasm`).
 
@@ -49,10 +49,10 @@ The template is written and tested against the real Ootle engine in-process. It 
 
 ## Layout
 
-- `templates/circle/` — the ROSCA template (Rust → WASM)
-- `templates/test_coin/` — test-only public coin used in place of TARI in engine tests
-- `tests/circle.rs` — engine tests
-- `web/` — the static demo app (simulation + on-chain notes)
+- `templates/circle/` - the ROSCA template (Rust → WASM)
+- `templates/test_coin/` - test-only public coin used in place of TARI in engine tests
+- `tests/circle.rs` - engine tests
+- `web/` - the static demo app (simulation + on-chain notes)
 
 ## Licence
 

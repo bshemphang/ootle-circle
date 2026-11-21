@@ -75,6 +75,10 @@ fn fund(
 }
 
 fn world() -> World {
+    world_n(MAX_MEMBERS)
+}
+
+fn world_n(max_members: u32) -> World {
     let mut test = TemplateTest::new(
         env!("CARGO_MANIFEST_DIR"),
         ["templates/circle", "templates/test_coin"],
@@ -88,7 +92,7 @@ fn world() -> World {
 
     let creator = party(&mut test);
     let mut members = Vec::new();
-    for _ in 0..3 {
+    for _ in 0..max_members {
         let m = party(&mut test);
         fund(&mut test, coin, m.account, &m.sk, FUND);
         members.push(m);
@@ -104,7 +108,7 @@ fn world() -> World {
                 "Test Circle".to_string(),
                 Amount::from(CONTRIBUTION),
                 EPOCH_LEN,
-                MAX_MEMBERS,
+                max_members,
                 JOIN_WINDOW
             ],
         )
@@ -139,13 +143,14 @@ fn world() -> World {
     }
 }
 
-/// Join all three members; the circle becomes active.
+/// Join all members; the circle becomes active.
 fn join_all(w: &mut World) {
-    for i in 0..3 {
+    let n = w.members.len();
+    for i in 0..n {
         join(w, i).expect("join");
     }
     assert_eq!(status(w), "active");
-    assert_eq!(member_count(w), 3);
+    assert_eq!(member_count(w), n as u32);
 }
 
 fn run(w: &mut World, t: Transaction) -> Result<(), String> {
@@ -570,4 +575,159 @@ fn create_validation_rejects_bad_parameters() {
         reason.contains("at least 1 epoch"),
         "unexpected reject: {reason}"
     );
+}
+
+/// Scalar view getters, for pinning the public read surface.
+fn view_name(w: &mut World) -> String {
+    w.test.call_method(w.circle, "name", args![], vec![])
+}
+
+fn view_contribution(w: &mut World) -> Amount {
+    w.test.call_method(w.circle, "contribution", args![], vec![])
+}
+
+fn view_round_deadline(w: &mut World) -> u64 {
+    w.test.call_method(w.circle, "round_deadline", args![], vec![])
+}
+
+fn view_round_started(w: &mut World) -> u64 {
+    w.test.call_method(w.circle, "round_started_epoch", args![], vec![])
+}
+
+fn view_created(w: &mut World) -> u64 {
+    w.test.call_method(w.circle, "created_epoch", args![], vec![])
+}
+
+#[test]
+fn two_member_rotation_completes() {
+    let mut w = world_n(2);
+    join_all(&mut w);
+    assert_eq!(member_count(&mut w), 2);
+
+    // Round 0: both pay, pot 200 pays out to member 0.
+    for i in 0..2 {
+        contribute(&mut w, i).expect("contribute round 0");
+    }
+    assert_eq!(round(&mut w), 1);
+    assert_eq!(balance(&mut w, 0), Amount::from(FUND + 100));
+    assert_eq!(balance(&mut w, 1), Amount::from(FUND - 100));
+
+    // Round 1: both pay, pot pays out to member 1, circle closes.
+    for i in 0..2 {
+        contribute(&mut w, i).expect("contribute round 1");
+    }
+    assert_eq!(status(&mut w), "closed");
+    assert_eq!(pot(&mut w), Amount::zero());
+    for i in 0..2 {
+        assert_eq!(balance(&mut w, i), Amount::from(FUND));
+    }
+}
+
+#[test]
+fn view_getters_report_correct_state() {
+    let mut w = world();
+    assert_eq!(view_name(&mut w), "Test Circle".to_string());
+    assert_eq!(view_contribution(&mut w), Amount::from(CONTRIBUTION));
+    assert_eq!(view_created(&mut w), START);
+    assert_eq!(status(&mut w), "filling");
+    assert_eq!(member_count(&mut w), 0);
+    assert_eq!(pot(&mut w), Amount::zero());
+
+    join_all(&mut w);
+    assert_eq!(status(&mut w), "active");
+    assert_eq!(view_round_started(&mut w), START);
+    assert_eq!(view_round_deadline(&mut w), START + EPOCH_LEN);
+    assert_eq!(round(&mut w), 0);
+
+    contribute(&mut w, 0).expect("member 0 pays");
+    assert_eq!(pot(&mut w), Amount::from(CONTRIBUTION));
+    assert_eq!(round(&mut w), 0);
+}
+
+#[test]
+fn join_at_fill_deadline_is_rejected() {
+    let mut w = world();
+    // The join window closes at START + JOIN_WINDOW; at exactly that epoch
+    // joining is rejected and cancelling becomes possible.
+    set_epoch(&mut w.test, START + JOIN_WINDOW);
+    expect_err(join(&mut w, 0), "join window has closed");
+    assert_eq!(member_count(&mut w), 0);
+    assert_eq!(status(&mut w), "filling");
+}
+
+#[test]
+fn contribute_at_exact_round_deadline_is_allowed() {
+    let mut w = world();
+    join_all(&mut w);
+    // Round 0 started at START; the window closes at START + EPOCH_LEN and
+    // the deadline epoch itself is still inside the window.
+    set_epoch(&mut w.test, START + EPOCH_LEN);
+    contribute(&mut w, 0).expect("pay at the deadline epoch");
+    assert_eq!(pot(&mut w), Amount::from(CONTRIBUTION));
+}
+
+#[test]
+fn close_early_with_no_payers_this_round() {
+    let mut w = world();
+    join_all(&mut w);
+    // Nobody has paid round 0 yet: closing early refunds nobody and the pot
+    // stays empty, but the circle still closes as refunded.
+    let creator_sk = w.creator.sk.clone();
+    call_no_args(&mut w, "close_early", &creator_sk).expect("close_early");
+    assert_eq!(status(&mut w), "refunded");
+    assert_eq!(pot(&mut w), Amount::zero());
+    for i in 0..3 {
+        assert_eq!(balance(&mut w, i), Amount::from(FUND));
+    }
+}
+
+#[test]
+fn cancel_when_active_is_rejected() {
+    let mut w = world();
+    join_all(&mut w);
+    assert_eq!(status(&mut w), "active");
+    let stranger_sk = w.stranger.sk.clone();
+    expect_err(
+        call_no_args(&mut w, "cancel", &stranger_sk),
+        "Only a circle still filling can be cancelled",
+    );
+    assert_eq!(status(&mut w), "active");
+}
+
+#[test]
+fn close_early_when_filling_is_rejected() {
+    let mut w = world();
+    join(&mut w, 0).expect("one member joins");
+    assert_eq!(status(&mut w), "filling");
+    let creator_sk = w.creator.sk.clone();
+    expect_err(
+        call_no_args(&mut w, "close_early", &creator_sk),
+        "Only an active circle can be closed early",
+    );
+    assert_eq!(status(&mut w), "filling");
+}
+
+#[test]
+fn deadline_passes_then_close_early_refunds() {
+    let mut w = world();
+    join_all(&mut w);
+    contribute(&mut w, 0).expect("member 0 pays round 0");
+    assert_eq!(pot(&mut w), Amount::from(CONTRIBUTION));
+
+    // The round window passes with members 1 and 2 unpaid.
+    set_epoch(&mut w.test, START + EPOCH_LEN + 1);
+    expect_err(
+        contribute(&mut w, 1),
+        "contribution window for this round has closed",
+    );
+    assert_eq!(pot(&mut w), Amount::from(CONTRIBUTION));
+
+    // The creator closes early; the one payer is refunded and the circle ends.
+    let creator_sk = w.creator.sk.clone();
+    call_no_args(&mut w, "close_early", &creator_sk).expect("close_early");
+    assert_eq!(status(&mut w), "refunded");
+    assert_eq!(pot(&mut w), Amount::zero());
+    for i in 0..3 {
+        assert_eq!(balance(&mut w, i), Amount::from(FUND));
+    }
 }
