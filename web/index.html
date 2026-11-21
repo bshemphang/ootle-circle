@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ootle Circle - Rotating savings circles on Tari</title>
-<meta name="description" content="Ootle Circle is a rotating savings circle (ROSCA) on Tari Ootle. Members contribute a fixed amount of TARI every round; each round one member, in rotation, takes the whole pot.">
+<meta name="description" content="Ootle Circle is a rotating savings circle (ROSCA) on Tari Ootle. Five members put in 50 TARI each round. Each round one member takes the whole 250 TARI pot. No interest, no fee, no middleman.">
 <meta property="og:title" content="Ootle Circle - Rotating savings circles on Tari">
 <meta property="og:description" content="Save together. Take turns. A ROSCA on Tari Ootle: fixed contributions, one payout per round, everyone whole at the end.">
 <meta property="og:type" content="website">
@@ -32,16 +32,20 @@
 </header>
 
 <main id="top">
-  <!-- Hero with 3D -->
+  <!-- Hero: split, oversized number, 3D panel -->
   <section class="hero">
     <div class="wrap hero-inner">
       <div class="hero-copy">
         <p class="eyebrow">A rotating savings circle on Tari Ootle</p>
-        <h1>Save together.<br>Take turns.</h1>
+        <div class="hero-number">
+          <div class="num tnum"><span id="count-total">0</span> <span class="unit">TARI</span></div>
+          <p class="cap">moves through one full 5-member circle. 5 members x 50 TARI x 5 rounds. Counted up live.</p>
+        </div>
+        <h1>Save together.<br><em>Take turns.</em></h1>
         <p class="lede">Five friends, 50 TARI each, every round. Each round one member takes the whole pot, in rotation. When everyone has taken the pot once, the circle closes and everyone is whole.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="simulator.html">Try the demo circle</a>
-          <a class="btn btn-ghost" href="contract.html">Read the contract</a>
+          <a class="btn btn-primary" href="simulator.html">Try the demo circle <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn-ghost" href="contract.html">Read the contract <span class="arrow" aria-hidden="true">&rarr;</span></a>
         </div>
         <ul class="hero-badges">
           <li><span class="dot"></span>Unaudited - walletless simulation</li>
@@ -50,57 +54,82 @@
         </ul>
       </div>
       <div class="hero-visual">
-        <div id="hero-3d" class="hero-3d" aria-label="3D view: five coins orbit a central pot. The teal coin is the member whose turn it is."></div>
-        <p class="hero-visual-caption">Five coins, one pot, one turn each. Drag your mouse to tilt the ring. The teal coin is Chloe, she takes the pot this round.</p>
+        <div id="hero-3d" class="hero-3d" aria-label="3D view: a gold coin and the pot it pays into. Scroll to spin the coin."></div>
+        <p class="hero-visual-caption">One coin, one pot, one turn each. Scroll to spin the coin. Move your mouse to tilt the scene.</p>
       </div>
     </div>
   </section>
 
-  <!-- Example circle strip -->
-  <section class="strip">
-    <div class="wrap strip-inner">
-      <div class="strip-card">
+  <!-- Circle strip: live member slots -->
+  <section class="circle-strip" aria-label="The example circle, round 2 of 5">
+    <div class="wrap circle-strip-inner">
+      <div class="circle-strip-label">
         <p class="card-label">Example circle</p>
         <p class="card-title">Shillong Friends Circle</p>
-        <p class="strip-note">No interest, no fees to a middleman, no one holding the money. The contract holds the pot and follows the rotation.</p>
+        <p>Round 2 of 5. Asha and Boris have taken the pot. Chloe takes it this round.</p>
       </div>
-      <dl class="strip-stats">
-        <div><dt>Contribution</dt><dd>50 TARI</dd></div>
-        <div><dt>Pot this round</dt><dd>200 TARI</dd></div>
-        <div><dt>Next payout</dt><dd>Chloe · 250 TARI</dd></div>
-        <div><dt>Status</dt><dd>Active · Round 2 of 5</dd></div>
-      </dl>
+      <div class="member-slots">
+        <div class="member-slot done"><span class="avatar">A</span><span class="who">Asha</span><span class="amt">Paid out</span></div>
+        <div class="member-slot done"><span class="avatar">B</span><span class="who">Boris</span><span class="amt">Paid out</span></div>
+        <div class="member-slot current"><span class="avatar">C</span><span class="who">Chloe</span><span class="amt">250 TARI now</span></div>
+        <div class="member-slot"><span class="avatar">D</span><span class="who">Dev</span><span class="amt">Round 4</span></div>
+        <div class="member-slot"><span class="avatar">Y</span><span class="who">You</span><span class="amt">Round 5</span></div>
+      </div>
+      <div class="progress-ring" aria-label="Round 2 of 5 complete">
+        <svg width="72" height="72" viewBox="0 0 72 72" role="img" aria-label="2 of 5 rounds complete">
+          <circle cx="36" cy="36" r="30" fill="none" stroke="#e5e0d3" stroke-width="6"/>
+          <circle cx="36" cy="36" r="30" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="113.1" transform="rotate(-90 36 36)"/>
+          <text x="36" y="41" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="15" font-weight="600" fill="#1b1a17">2/5</text>
+        </svg>
+        <div><div class="ring-num">Round 2 of 5</div><div class="ring-cap">500 TARI paid out so far</div></div>
+      </div>
     </div>
   </section>
 
-  <!-- How it works -->
+  <!-- Ticker -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="ticker-track">
+      <span class="ticker-item"><span class="t-name">Asha</span><span class="t-amt">250 TARI</span><span class="t-meta">Round 1</span></span>
+      <span class="ticker-item"><span class="t-name">Boris</span><span class="t-amt">250 TARI</span><span class="t-meta">Round 2</span></span>
+      <span class="ticker-item"><span class="t-name">Chloe</span><span class="t-amt">250 TARI</span><span class="t-meta">Round 3</span></span>
+      <span class="ticker-item"><span class="t-name">Dev</span><span class="t-amt">250 TARI</span><span class="t-meta">Round 4</span></span>
+      <span class="ticker-item"><span class="t-name">You</span><span class="t-amt">250 TARI</span><span class="t-meta">Round 5</span></span>
+      <span class="ticker-item"><span class="t-name">Asha</span><span class="t-amt">250 TARI</span><span class="t-meta">Round 1</span></span>
+      <span class="ticker-item"><span class="t-name">Boris</span><span class="t-amt">250 TARI</span><span class="t-meta">Round 2</span></span>
+      <span class="ticker-item"><span class="t-name">Chloe</span><span class="t-amt">250 TARI</span><span class="t-meta">Round 3</span></span>
+      <span class="ticker-item"><span class="t-name">Dev</span><span class="t-amt">250 TARI</span><span class="t-meta">Round 4</span></span>
+      <span class="ticker-item"><span class="t-name">You</span><span class="t-amt">250 TARI</span><span class="t-meta">Round 5</span></span>
+    </div>
+  </div>
+
+  <!-- How it works: editorial numbered list -->
   <section id="how" class="section">
     <div class="wrap">
-      <h2>How a circle works</h2>
-      <p class="section-lede">A ROSCA is one of the oldest savings habits in the world. Ootle Circle puts its rules on-chain, so no one has to trust the organiser with the money.</p>
-      <div class="steps">
-        <article class="step">
-          <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span>
-          <h3>1. Create a circle</h3>
-          <p>Set a name, a fixed contribution, a round length, and how many members the circle holds. The circle opens for joining.</p>
-        </article>
-        <article class="step">
-          <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-          <h3>2. Members join</h3>
-          <p>Each member joins with the account that will receive their payout. When the circle fills, round one starts.</p>
-        </article>
-        <article class="step">
-          <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4"/><path d="M16.71 13.88l.7.71-2.82 2.82"/></svg></span>
-          <h3>3. Contribute each round</h3>
-          <p>Every member pays exactly the contribution, once per round, inside the round window. Wrong amounts and double payments are rejected.</p>
-        </article>
-        <article class="step">
-          <span class="step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-          <h3>4. One member takes the pot</h3>
-          <p>When the last member pays, the whole pot goes to the member whose turn it is. After every member has taken the pot once, the circle closes.</p>
-        </article>
+      <div class="section-head reveal">
+        <div>
+          <span class="section-num">01 / HOW IT WORKS</span>
+          <h2>How a circle works</h2>
+        </div>
+        <p class="section-lede">A ROSCA is one of the oldest savings habits in the world. Ootle Circle puts its rules on-chain, so no one has to trust the organiser with the money.</p>
       </div>
-      <div class="math-strip">
+      <div class="editorial-list">
+        <div class="editorial-item reveal">
+          <span class="num">01</span>
+          <div><h3>Pool</h3><p>Five members agree on 50 TARI a round. Everyone pays the same, every round, into one pot the contract holds.</p></div>
+          <p class="detail">5 members x 50 TARI = 250 TARI in the pot, every round. The contract rejects any other amount.</p>
+        </div>
+        <div class="editorial-item reveal">
+          <span class="num">02</span>
+          <div><h3>Rotate</h3><p>The turn order is the join order. Asha first, then Boris, Chloe, Dev, then you. No bidding, no lottery, no favour.</p></div>
+          <p class="detail">Round 1: Asha. Round 2: Boris. Round 3: Chloe. Round 4: Dev. Round 5: you.</p>
+        </div>
+        <div class="editorial-item reveal">
+          <span class="num">03</span>
+          <div><h3>Payout</h3><p>When the last member pays, the whole pot goes to the member whose turn it is. After five rounds the circle closes.</p></div>
+          <p class="detail">Each member pays 250 TARI in total and takes 250 TARI once. Everyone is whole.</p>
+        </div>
+      </div>
+      <div class="math-strip reveal">
         <h3>The math, in one circle</h3>
         <p>Take the preset circle below: 5 members, 50 TARI each, every round.</p>
         <dl class="math-facts">
@@ -111,7 +140,7 @@
           <div><dt>Net at the end</dt><dd>Everyone whole, no interest, no fee</dd></div>
         </dl>
       </div>
-      <div class="honest-box">
+      <div class="honest-box reveal">
         <h3>What the contract cannot do</h3>
         <p>It cannot force a member to pay, and it cannot see whether someone meant to pay. If a round stalls because someone stops paying, the only remedy is the creator closing the circle early, which refunds everyone who paid that round. That is the same trust model as a real-world savings circle, and it is stated here on purpose.</p>
       </div>
@@ -121,13 +150,18 @@
   <!-- Numbers -->
   <section class="section section-alt">
     <div class="wrap">
-      <h2>The numbers that matter</h2>
-      <p class="section-lede">The contract is small, tested, and honest about what it does not do.</p>
+      <div class="section-head reveal">
+        <div>
+          <span class="section-num">02 / THE NUMBERS</span>
+          <h2>The numbers that matter</h2>
+        </div>
+        <p class="section-lede">The contract is small, tested, and honest about what it does not do.</p>
+      </div>
       <dl class="numbers-grid">
-        <div><dt>Engine tests</dt><dd>23 passed, 0 failed</dd><dd class="sub">Against the real Ootle engine, in-process</dd></div>
-        <div><dt>Release WASM</dt><dd>156 KiB</dd><dd class="sub">One template, no dependencies at runtime</dd></div>
-        <div><dt>Contract fee</dt><dd>0 TARI</dd><dd class="sub">Only the network fee per transaction</dd></div>
-        <div><dt>Members per circle</dt><dd>2 to 8</dd><dd class="sub">Set at creation, fixed for the circle</dd></div>
+        <div><dt>Engine tests</dt><dd><span class="tnum">23 passed, 0 failed</span></dd><dd class="sub">Against the real Ootle engine, in-process</dd></div>
+        <div><dt>Release WASM</dt><dd><span class="mono">156 KiB</span></dd><dd class="sub">One template, no dependencies at runtime</dd></div>
+        <div><dt>Contract fee</dt><dd><span class="mono">0 TARI</span></dd><dd class="sub">Only the network fee per transaction</dd></div>
+        <div><dt>Members per circle</dt><dd><span class="tnum">2 to 8</span></dd><dd class="sub">Set at creation, fixed for the circle</dd></div>
       </dl>
     </div>
   </section>
@@ -135,17 +169,22 @@
   <!-- Demo video -->
   <section class="section">
     <div class="wrap">
-      <h2>Watch it work</h2>
-      <p class="section-lede">A 40-second walkthrough of the simulator: create the preset circle, auto-play the full rotation, and watch every member take the pot once.</p>
-      <div class="video-frame">
+      <div class="section-head reveal">
+        <div>
+          <span class="section-num">03 / WATCH IT WORK</span>
+          <h2>Watch it work</h2>
+        </div>
+        <p class="section-lede">A narrated walkthrough of the simulator: create the preset circle, auto-play the full rotation, and watch every member take the pot once.</p>
+      </div>
+      <div class="video-frame reveal">
         <video controls preload="metadata" poster="video/poster.svg" src="video/demo.mp4">
           Your browser does not support the video tag. Try the simulator instead.
         </video>
       </div>
-      <p class="video-note">Walletless simulation. No real TARI moves in this video or in the demo.</p>
+      <p class="video-note">Walletless simulation with voiceover. No real TARI moves in this video or in the demo.</p>
       <div class="cta-row">
-        <a class="btn btn-primary" href="simulator.html">Open the simulator</a>
-        <a class="btn btn-ghost" href="learn.html">Learn how a ROSCA works</a>
+        <a class="btn btn-primary" href="simulator.html">Open the simulator <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        <a class="btn btn-ghost" href="learn.html">Learn how a ROSCA works <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
   </section>
@@ -156,6 +195,10 @@
     <div>
       <p class="footer-brand">Ootle Circle</p>
       <p class="footer-note">A rotating savings circle on Tari Ootle. Built by x3npai for the Tari November 2026 MVP contest. MIT licensed. Unaudited testnet demo.</p>
+      <div class="footer-badges">
+        <span>MIT licensed</span><span>Unaudited</span><span>Testnet demo</span><span>23 tests passing</span>
+      </div>
+      <p class="footer-legal">Ootle Circle is a demo and a contest entry, not financial advice. Do not put money you cannot afford to lose into any unaudited contract.</p>
     </div>
     <nav class="footer-nav">
       <a href="simulator.html">Simulator</a>
@@ -163,11 +206,13 @@
       <a href="learn.html">Learn</a>
       <a href="https://github.com/bshemphang/ootle-circle" target="_blank" rel="noopener">GitHub</a>
       <a href="https://community.tari.com/t/november-build-contest-thread-mvp/520" target="_blank" rel="noopener">Contest thread</a>
+      <a href="https://ootle.tari.com/" target="_blank" rel="noopener">Ootle docs</a>
     </nav>
   </div>
 </footer>
 
 <script src="vendor/three.min.js"></script>
 <script src="hero3d.js"></script>
+<script src="site.js"></script>
 </body>
 </html>
