@@ -14,8 +14,10 @@
 
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(40, W / H, 0.1, 100);
-  camera.position.set(0, 1.4, 7.4);
-  camera.lookAt(0, 0, 0);
+  // Framed on the pair, not the pot alone: the coin above and the pot below
+  // both sit inside the frame with headroom on narrow mobile aspect ratios.
+  camera.position.set(0, 1.2, 8.2);
+  camera.lookAt(0, -0.2, 0);
 
   var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(W, H);
@@ -31,6 +33,10 @@
   var rim = new THREE.DirectionalLight(0x2dd4bf, 0.6);
   rim.position.set(-5, 2, -4);
   scene.add(rim);
+  // Warm light on the coin so the gold face pops against the panel.
+  var coinLight = new THREE.PointLight(0xffd97a, 0.9, 6);
+  coinLight.position.set(0, 2.4, 2.5);
+  scene.add(coinLight);
 
   // The pot: a lathed teal vessel with a belly, a flared lip, and a gold rim,
   // low in the frame. The lathe profile gives it a crafted shape, not a cone.
@@ -153,6 +159,27 @@
     my = (e.clientY / window.innerHeight - 0.5) * 2;
   }, { passive: true });
 
+  // Drag to spin: pointer events cover mouse and touch. Horizontal drags spin
+  // the coin; vertical scrolling still works (CSS touch-action: pan-y).
+  var idleSpin = 0;   // the coin spins on its own, always, no input needed
+  var dragSpin = 0;   // extra spin added by dragging
+  var dragging = false, lastX = 0;
+  container.addEventListener("pointerdown", function (e) {
+    dragging = true;
+    lastX = e.clientX;
+    try { container.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  container.addEventListener("pointermove", function (e) {
+    if (!dragging) return;
+    var dx = e.clientX - lastX;
+    lastX = e.clientX;
+    dragSpin += dx * 0.01;
+    mx = Math.max(-1, Math.min(1, mx + dx * 0.002));
+  });
+  function endDrag() { dragging = false; }
+  container.addEventListener("pointerup", endDrag);
+  container.addEventListener("pointercancel", endDrag);
+
   // Scroll-linked rotation: the coin spins as the page scrolls
   var scrollRot = 0;
   function onScroll() {
@@ -180,12 +207,23 @@
   }
 
   var clock = new THREE.Clock();
+  var elapsed = 0;
   function tick() {
     requestAnimationFrame(tick);
     if (!visible) return;
-    var t = clock.getElapsedTime();
+    // getDelta() first: getElapsedTime() consumes the delta internally, so
+    // calling it before getDelta() would return a ~0 step every frame.
+    var dt = Math.min(clock.getDelta(), 0.1);
+    elapsed += dt;
+    var t = elapsed;
     if (!reduced) {
-      coinGroup.rotation.y = scrollRot + Math.sin(t * 0.5) * 0.15;
+      // Idle spin: the coin turns on its own at ~0.9 rad/s, so the hero is
+      // alive the moment the page loads, on mobile or desktop, with no
+      // scroll, no mouse, and no touch needed. The old wobble of +/-0.15 rad
+      // was invisible, and the pot is a lathed vessel, so rotating it alone
+      // shows nothing. Scroll and drag add on top of the idle spin.
+      idleSpin += dt * 0.9;
+      coinGroup.rotation.y = scrollRot + idleSpin + dragSpin;
       coinGroup.rotation.x = 0.5 + Math.sin(t * 0.4) * 0.06;
       coinGroup.position.y = 0.9 + Math.sin(t * 0.9) * 0.08;
       potGroup.rotation.y = -t * 0.1;

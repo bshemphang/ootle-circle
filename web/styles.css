@@ -195,9 +195,17 @@ a { color: var(--teal-deep); }
 .cycle-join:hover { text-decoration: underline; }
 
 .hero-visual { text-align: center; }
-.hero-3d { width: 100%; height: 440px; border-radius: var(--radius); background: linear-gradient(160deg, #eef4f2, #f7f3ea); border: 1px solid var(--line); overflow: hidden; }
+.hero-3d { width: 100%; height: 440px; border-radius: var(--radius); background: linear-gradient(160deg, #eef4f2, #f7f3ea); border: 1px solid var(--line); overflow: hidden; touch-action: pan-y; cursor: grab; }
+.hero-3d:active { cursor: grabbing; }
 .hero-3d canvas { width: 100% !important; height: 100% !important; display: block; }
 .hero-visual-caption { font-size: .9rem; color: var(--ink-soft); margin: 14px auto 0; max-width: 360px; }
+/* Caption swaps per device: touch users get drag instructions, mouse users
+   get scroll and tilt instructions. Phones have no mouse. */
+.cap-touch { display: none; }
+@media (hover: none), (pointer: coarse) {
+  .cap-touch { display: inline; }
+  .cap-mouse { display: none; }
+}
 
 /* Circle strip: member slots on a connecting line */
 .circle-strip {
@@ -638,6 +646,14 @@ dfn { font-style: normal; border-bottom: 1px dotted var(--teal); cursor: help; }
   .progress-rail li::before { display: none; }
   .template-card .tc-stats { margin-left: 0; }
   .hero-3d { height: 360px; }
+  /* Kira fix: the member strip must never clip. Below 900px the label takes
+     its own row and the five slots share the full width as a grid, so every
+     member and every amount is fully visible with no hidden scroll. */
+  .circle-strip-inner { gap: 20px; }
+  .circle-strip-label { flex: 1 1 100%; }
+  .circle-strip-label p { max-width: none; }
+  .member-slots { flex: 1 1 100%; min-width: 0; overflow: visible; display: grid; grid-template-columns: repeat(5, 1fr); }
+  .member-slot { min-width: 0; }
 }
 @media (max-width: 600px) {
   .wrap { padding: 0 20px; }
@@ -661,9 +677,7 @@ dfn { font-style: normal; border-bottom: 1px dotted var(--teal); cursor: help; }
   h2 { font-size: 1.7rem; }
   .section { padding: 60px 0; }
   .hero-3d { height: 300px; }
-  .member-slots { min-width: 0; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
-  .member-slots::-webkit-scrollbar { display: none; }
-  .member-slot { flex: 0 0 68px; }
+  .member-slot .amt { font-size: .72rem; }
   .progress-rail { min-width: 0; overflow-x: auto; }
   .progress-rail ol { width: max-content; max-width: none; }
 }
